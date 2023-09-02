@@ -42,6 +42,8 @@ function getBaseCssClass(params: CssGeneratorParams): string {
 	display: inline-block;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
+	text-align: center;
+	text-decoration: inherit;
 }`
 }
 
@@ -60,6 +62,8 @@ function getFontFaceCss(params: CssGeneratorParams, fontParams: FontGeneratorPar
 @font-face {
 	font-family: ${JSON.stringify(params.fontFamily)};
 	src: ${src};
+	font-weight: normal;
+	font-style: normal;
 }`
 }
 

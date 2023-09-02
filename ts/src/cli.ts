@@ -15,6 +15,7 @@ const defaultFontFormatList: FontFormat = "woff2"
 const defaultFontFamily = "icons"
 const defaultCssClassName = "icon"
 const defaultCssImportStyle: CssImportStyle = "default"
+const defaultFontHeight = 1000
 
 function displayHelp(): never {
 	const helpStr = `A tool to work with icon fonts.
@@ -23,6 +24,7 @@ function displayHelp(): never {
 --font-path:            Path to a resulting font (without extension, like './static/font/my_icon_font'); extension(s) will be added automatically. Required.
 --font-formats:         List of font extensions that need to be generated. Available values: ${knownFontFormats.join(", ")}. More than one format is passed as comma-separated string: 'ttf,eot,woff'. Default is '${defaultFontFormatList}'. Case-insensitive.
 --font-normalize:       If enabled, heights of the icons will be equalized. False by default.
+--font-height:          Integer. fontHeight parameter of svgicons2svgfont. Default ${defaultFontHeight}.
 --css-path:             Path to resulting CSS file. Required.
 --css-font-family:      Name of imported font. Default '${defaultFontFamily}'.
 --css-font-import-path: String that will be used as an import path of font file(s) in TS file. Default is a relative path between the two. Should omit font extension, as in --font-path.
@@ -72,6 +74,14 @@ function resolveRelativeImportPath(a: string, b: string): string {
 	return result
 }
 
+function parseIntOrThrow(str: string): number {
+	const parsed = parseInt(str)
+	if(parsed + "" !== str){
+		throw new Error("Expected int, got " + str)
+	}
+	return parsed
+}
+
 export function parseCli(): CliArgs {
 	let svgDir: string | null = null
 	let isVerbose = false
@@ -79,6 +89,7 @@ export function parseCli(): CliArgs {
 	let fontPath: string | null = null
 	let fontFormats = parseFormatListStr(defaultFontFormatList)
 	let fontNormalize = false
+	let fontHeight = defaultFontHeight
 
 	let tsPath: string | null = null
 	let tsName = defaultTsName
@@ -107,6 +118,7 @@ export function parseCli(): CliArgs {
 			case "--font-path": fontPath = Path.resolve(nextArg()); break
 			case "--font-formats": fontFormats = parseFormatListStr(nextArg()); break
 			case "--font-normalize": fontNormalize = true; break
+			case "--font-height": fontHeight = parseIntOrThrow(nextArg()); break
 			case "--ts-path": tsPath = Path.resolve(nextArg()); break
 			case "--ts-name": tsName = nextArg(); break
 			case "--ts-css-import-path": tsCssImportPath = nextArg(); break
@@ -146,7 +158,8 @@ export function parseCli(): CliArgs {
 			formats: fontFormats,
 			pathBase: fontPath,
 			normalize: fontNormalize,
-			isVerbose
+			isVerbose,
+			fontHeight
 		},
 		ts: {
 			name: tsName,

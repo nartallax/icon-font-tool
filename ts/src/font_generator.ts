@@ -20,6 +20,7 @@ export interface FontGeneratorParams {
 	readonly formats: readonly FontFormat[]
 	readonly normalize: boolean
 	readonly isVerbose: boolean
+	readonly fontHeight: number
 }
 
 function processSvgfontInfo(jsonString: string): FontIconMap {
@@ -77,9 +78,7 @@ export async function generateFonts(svgDir: string, params: FontGeneratorParams)
 			startUnicode: 0xf101, // https://codepoints.net/private_use_area
 			generateInfoData: true,
 			svgicons2svgfont: {
-				// if goes lower than 1000 - generator starts to complain
-				// looks like it's something about quality? more = heavier font files
-				fontHeight: 5000,
+				fontHeight: params.fontHeight,
 				normalize: params.normalize,
 				log: params.isVerbose ? undefined : () => {/* noop */}
 			},
