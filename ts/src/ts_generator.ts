@@ -1,4 +1,5 @@
 import {promises as Fs} from "fs"
+import * as Path from "path"
 import {CssGeneratorParams} from "src/css_generator"
 import {FontGenerationResult} from "src/font_generator"
 
@@ -57,6 +58,7 @@ function makeIdentifiers(fontResult: FontGenerationResult): [name: string, ident
 export async function generateTs(params: TsGeneratorParams, cssParams: CssGeneratorParams, fontResult: FontGenerationResult): Promise<void> {
 	const generator = /\.module\.[^.]+$/i.test(params.cssImportPath) ? generateObject : generateConstEnum
 	const ts = generator(params, cssParams, fontResult)
+	await Fs.mkdir(Path.dirname(params.path), {recursive: true})
 	await Fs.writeFile(params.path, ts, "utf-8")
 }
 

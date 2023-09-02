@@ -97,6 +97,7 @@ export async function generateFonts(svgDir: string, params: FontGeneratorParams)
 			throw new Error("Failed to process info.json from svginfo: " + e)
 		}
 
+		await Fs.mkdir(Path.dirname(params.pathBase), {recursive: true})
 		await Promise.all(knownFontFormats.map(format => tryMoveFont(format)))
 	} finally {
 		await outDir.remove()

@@ -1,5 +1,6 @@
 import {FontGenerationResult, FontGeneratorParams} from "src/font_generator"
 import {promises as Fs} from "fs"
+import * as Path from "path"
 
 export interface CssGeneratorParams {
 	readonly path: string
@@ -11,6 +12,7 @@ export interface CssGeneratorParams {
 
 export async function generateCss(params: CssGeneratorParams, fontParams: FontGeneratorParams, fontResult: FontGenerationResult): Promise<void> {
 	const css = generateCssContent(params, fontParams, fontResult)
+	await Fs.mkdir(Path.dirname(params.path), {recursive: true})
 	await Fs.writeFile(params.path, css, "utf-8")
 }
 
