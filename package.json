@@ -1,10 +1,10 @@
 {
   "name": "@nartallax/icon-font-tool",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A tool to work with icon fonts",
   "main": "icon-font-tool.cjs",
   "bin": {
-    "package-cutter": "icon-font-tool.cjs"
+    "icon-font-tool": "icon-font-tool.cjs"
   },
   "type": "module",
   "scripts": {
