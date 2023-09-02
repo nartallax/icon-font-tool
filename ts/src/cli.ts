@@ -25,6 +25,10 @@ function displayHelp(): never {
 --font-formats:         List of font extensions that need to be generated. Available values: ${knownFontFormats.join(", ")}. More than one format is passed as comma-separated string: 'ttf,eot,woff'. Default is '${defaultFontFormatList}'. Case-insensitive.
 --font-normalize:       If enabled, heights of the icons will be equalized. False by default.
 --font-height:          Integer. fontHeight parameter of svgicons2svgfont. Default ${defaultFontHeight}.
+--font-descent:         Number. descent parameter of svgicons2svgfont. Default - absent.
+--font-v-center:        Boolean. Center font vertically.
+--font-h-center:        Boolean. Center font horisontally.
+--font-monospace:       Boolean. Makes each icon take same width.
 --css-path:             Path to resulting CSS file. Required.
 --css-font-family:      Name of imported font. Default '${defaultFontFamily}'.
 --css-font-import-path: String that will be used as an import path of font file(s) in TS file. Default is a relative path between the two. Should omit font extension, as in --font-path.
@@ -82,6 +86,14 @@ function parseIntOrThrow(str: string): number {
 	return parsed
 }
 
+function parseFloatOrThrow(str: string): number {
+	const parsed = parseFloat(str)
+	if(Number.isNaN(parsed)){
+		throw new Error("Expected float, got " + str)
+	}
+	return parsed
+}
+
 export function parseCli(): CliArgs {
 	let svgDir: string | null = null
 	let isVerbose = false
@@ -90,6 +102,10 @@ export function parseCli(): CliArgs {
 	let fontFormats = parseFormatListStr(defaultFontFormatList)
 	let fontNormalize = false
 	let fontHeight = defaultFontHeight
+	let fontMonospace = false
+	let fontHCenter = false
+	let fontVCenter = false
+	let fontDescent: number | null = null
 
 	let tsPath: string | null = null
 	let tsName = defaultTsName
@@ -119,6 +135,10 @@ export function parseCli(): CliArgs {
 			case "--font-formats": fontFormats = parseFormatListStr(nextArg()); break
 			case "--font-normalize": fontNormalize = true; break
 			case "--font-height": fontHeight = parseIntOrThrow(nextArg()); break
+			case "--font-descent": fontDescent = parseFloatOrThrow(nextArg()); break
+			case "--font-v-center": fontVCenter = true; break
+			case "--font-h-center": fontHCenter = true; break
+			case "--font-monospace": fontMonospace = true; break
 			case "--ts-path": tsPath = Path.resolve(nextArg()); break
 			case "--ts-name": tsName = nextArg(); break
 			case "--ts-css-import-path": tsCssImportPath = nextArg(); break
@@ -159,7 +179,11 @@ export function parseCli(): CliArgs {
 			pathBase: fontPath,
 			normalize: fontNormalize,
 			isVerbose,
-			fontHeight
+			fontHeight,
+			centerHorisontally: fontHCenter,
+			centerVertically: fontVCenter,
+			descent: fontDescent,
+			fixedWidth: fontMonospace
 		},
 		ts: {
 			name: tsName,

@@ -1,6 +1,6 @@
 {
   "name": "@nartallax/icon-font-tool",
-  "version": "1.0.3",
+  "version": "1.0.6",
   "description": "A tool to work with icon fonts",
   "main": "icon-font-tool.cjs",
   "bin": {

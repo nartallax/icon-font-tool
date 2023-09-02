@@ -21,6 +21,10 @@ export interface FontGeneratorParams {
 	readonly normalize: boolean
 	readonly isVerbose: boolean
 	readonly fontHeight: number
+	readonly centerVertically: boolean
+	readonly centerHorisontally: boolean
+	readonly fixedWidth: boolean
+	readonly descent: number | null
 }
 
 function processSvgfontInfo(jsonString: string): FontIconMap {
@@ -78,6 +82,10 @@ export async function generateFonts(svgDir: string, params: FontGeneratorParams)
 			startUnicode: 0xf101, // https://codepoints.net/private_use_area
 			generateInfoData: true,
 			svgicons2svgfont: {
+				centerHorizontally: params.centerHorisontally,
+				centerVertically: params.centerVertically,
+				fixedWidth: params.fixedWidth,
+				descent: params.descent ?? undefined,
 				fontHeight: params.fontHeight,
 				normalize: params.normalize,
 				log: params.isVerbose ? undefined : () => {/* noop */}
